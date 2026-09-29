@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map; 
 
 @RestController
 @RequestMapping("/zoonotic-incidents")
@@ -153,6 +154,45 @@ return ResponseEntity.status(403).body("Not authorized for zoonotic hazard");
 
 repository.deleteById(id);
 return ResponseEntity.ok("Deleted");
+}
+
+@PutMapping("/{id}/reject")
+public ResponseEntity<?> reject(@RequestHeader("Authorization") String authHeader,
+                                 @PathVariable Long id,
+                                 @RequestBody Map<String, String> body) {
+    Claims claims = getClaims(authHeader);
+    String role = claims.get("role", String.class);
+
+    if (!"PROVINCIAL_SUPERVISOR".equals(role) || !isZoonoticAuthorized(claims)) {
+        return ResponseEntity.status(403).body("Only the zoonotic supervisor can reject");
+    }
+
+    Optional<ZoonoticIncident> incidentOpt = repository.findById(id);
+    if (incidentOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+    ZoonoticIncident incident = incidentOpt.get();
+    incident.setStatus("REJECTED");
+    repository.save(incident);
+    return ResponseEntity.ok(incident);
+}
+
+@PutMapping("/{id}/request-correction")
+public ResponseEntity<?> requestCorrection(@RequestHeader("Authorization") String authHeader,
+                                            @PathVariable Long id) {
+    Claims claims = getClaims(authHeader);
+    String role = claims.get("role", String.class);
+
+    if (!"PROVINCIAL_SUPERVISOR".equals(role) || !isZoonoticAuthorized(claims)) {
+        return ResponseEntity.status(403).body("Only the zoonotic supervisor can request corrections");
+    }
+
+    Optional<ZoonoticIncident> incidentOpt = repository.findById(id);
+    if (incidentOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+    ZoonoticIncident incident = incidentOpt.get();
+    incident.setStatus("CORRECTION_REQUESTED");
+    repository.save(incident);
+    return ResponseEntity.ok(incident);
 }
 }
 

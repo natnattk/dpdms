@@ -1,4 +1,4 @@
-package com.ruhinga.dpdms.fire_service;
+package com.rushinga.dpdms.fire_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
