@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DPDMS - Rushinga Disaster Monitoring</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+  header { background: #1b3a5c; color: white; padding: 16px; }
+  .container { padding: 20px; max-width: 900px; margin: auto; }
+  input, select, button { padding: 8px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+  button { background: #1b3a5c; color: white; border: none; cursor: pointer; }
+  button:hover { background: #2a5580; }
+  .card { background: white; padding: 16px; margin: 10px 0; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .status-PENDING { color: #b8860b; font-weight: bold; }
+  .status-APPROVED { color: green; font-weight: bold; }
+  .status-REJECTED { color: red; font-weight: bold; }
+  .status-CORRECTION_REQUESTED { color: orange; font-weight: bold; }
+  .hidden { display: none; }
+  .btn-row button { width: auto; margin-right: 6px; padding: 6px 12px; }
+</style>
+</head>
+<body>
+
+<header><h2>DPDMS - Rushinga Provincial Disaster Monitoring</h2></header>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="loginSection" class="card">
+    <h3>Login</h3>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginMsg" style="color:red;"></p>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="appSection" class="hidden">
+    <div class="card">
+      <p>Logged in as <b id="whoami"></b> | Role: <b id="whorole"></b> | Hazard: <b id="whohazard"></b></p>
+      <button onclick="logout()" style="width:auto;">Logout</button>
+    </div>
+
+    <div class="card">
+      <button onclick="showTab('report')" style="width:auto;">Report Incident</button>
+      <button onclick="showTab('incidents')" style="width:auto;">My Incidents</button>
+      <button onclick="showTab('dashboard')" style="width:auto;">Dashboard</button>
+    </div>
+
+    <div id="tab-report" class="card">
+      <h3>Report New Incident</h3>
+      <select id="hazardSelect" onchange="renderForm()">
+        <option value="flood">Flood</option>
+        <option value="drought">Drought</option>
+        <option value="fire">Fire</option>
+        <option value="zoonotic">Zoonotic</option>
+        <option value="mining">Mining</option>
+      </select>
+      <div id="dynamicForm"></div>
+      <button onclick="submitIncident()">Submit Incident</button>
+      <p id="submitMsg"></p>
+    </div>
+
+    <div id="tab-incidents" class="card hidden">
+      <h3>Incidents</h3>
+      <button onclick="loadIncidents()" style="width:auto;">Refresh</button>
+      <div id="incidentsList"></div>
+    </div>
+
+    <div id="tab-dashboard" class="card hidden">
+      <h3>Dashboard Summary</h3>
+      <button onclick="loadDashboard()" style="width:auto;">Refresh</button>
+      <div id="dashboardResult"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="/app.js"></script>/script>
+
+</body>
+</html>
